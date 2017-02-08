@@ -4,3 +4,10 @@
 
 #!/usr/bin/python
 
+def packet_sniffer():
+	return NULL
+
+def main():
+
+main()
+
