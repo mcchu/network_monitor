@@ -20,9 +20,9 @@ localhostString = "127.0.0.1"
 TERMINATEPAGELIST = []
 URLLIST = []
 task1Period = 3
-task2Period = 3
-task3Period = 3
-task4Period = 3
+task2Period = 1
+task3Period = 1
+task4Period = 1
 
 def downloadWebpage(urlString):
     
@@ -83,6 +83,7 @@ def codeOptimization(URL):
 
 ##### end of codeOptimization() ########
 
+@timeout(task4Period)
 def task4(webDriver):
 
     global FILEHANDLE, fileOpened
@@ -102,7 +103,8 @@ def task4(webDriver):
 
     
 ##### end of task4() ########            
-    
+
+@timeout(task3Period)    
 def task3(webDriver):
 
     '''
@@ -144,6 +146,7 @@ def task3(webDriver):
     
 ##### end of task3() ######## 
 
+@timeout(task2Period)
 def task2(webDriver):
     
     for URL in TERMINATEPAGELIST:
@@ -163,6 +166,8 @@ def task2(webDriver):
 
 ##### end of task2() ########       
 
+
+@timeout(task1Period)
 def task1(webDriver):
     
     print "Getting current URLs:"
@@ -227,6 +232,20 @@ def debug(webdriver):
     webdriver.execute_script("window.open('','_blank');")
     webdriver.switch_to.window(webdriver.window_handles[-1])
     webdriver.get("http://www.tv-porinternet.com/")
+    
+    
+##### end of debug() ########
+    
+    
+def adjustTaskTime(taskperiod, taskStartTime):
+    
+    actualTaskTime = time.time()  - taskStartTime
+    print "Actual period: " + str(actualTaskTime)
+    taskTimeRemaining = taskperiod - actualTaskTime
+    if (taskTimeRemaining > 0):
+        time.sleep(taskTimeRemaining)
+        
+##### end of adjustTaskTime() ########
 
 
 def main():
@@ -242,7 +261,14 @@ def main():
         # Task 1: Determine what websites to close or optimize depending on bandwidth
         print "TASK 1:"
         taskStart = time.time()
-        task1(firefoxDriver)
+        missedDeadline = False
+        try:
+            task1(firefoxDriver)
+        except:
+            missedDeadline = True
+            print "SOFTMISSED: missed deadline"
+            
+        adjustTaskTime(task1Period, taskStart)
         taskPeriod = time.time() - taskStart
         print "Task 1 period: " + str(taskPeriod)
         print 
@@ -250,7 +276,14 @@ def main():
         # Task 2: Try to optimize websites
         print "TASK 2:"
         taskStart = time.time()
-        task2(firefoxDriver)
+        missedDeadline = False
+        try:
+            task2(firefoxDriver)
+        except:
+            missedDeadline = True
+            print "SOFTMISSED: missed deadline"
+            
+        adjustTaskTime(task2Period, taskStart) 
         taskPeriod = time.time() - taskStart
         print "Task 2 period: " + str(taskPeriod)
         print  
@@ -258,7 +291,14 @@ def main():
         # Task 3: Close websites
         print "TASK 3:"
         taskStart = time.time()
-        task3(firefoxDriver)
+        missedDeadline = False
+        try:
+            task3(firefoxDriver)
+        except:
+            missedDeadline = True
+            print "SOFTMISSED: missed deadline"
+            
+        adjustTaskTime(task3Period, taskStart)
         taskPeriod = time.time() - taskStart
         print "Task 3 period: " + str(taskPeriod)
         print
@@ -266,7 +306,14 @@ def main():
         # Task 4: Cleanup in case of deadline misses
         print "TASK 4:"
         taskStart = time.time()
-        task4(firefoxDriver)
+        missedDeadline = False
+        try:
+            task4(firefoxDriver)
+        except:
+            missedDeadline = True
+            print "SOFTMISSED: missed deadline"
+            
+        adjustTaskTime(task4Period, taskStart)
         taskPeriod = time.time() - taskStart
         print "Task 4 period: " + str(taskPeriod)
         print
@@ -280,56 +327,13 @@ def main():
         
 #         numIn = raw_input("Command: ")
 #         if int(numIn) == 0:
-#             break
-        time.sleep(3)        
+#             break    
 
 ##### LOOP AND NEVER RETURN ######    
-    
-def test4():
-    print FILEHANDLE
-
-@timeout(2)
-def test():
-    #print FILEHANDLE
-    time.sleep(3)
-    
-@timeout(3)
-def test2():
-    time.sleep(8)
         
 
 if __name__ == "__main__":
     main()
-    
-    
-    # implementation to make a task timeout 
-    while (1):
-        timeStart = time.time()  
-             
-        try:
-            taskStart = time.time() 
-            test()
-            taskTime = time.time()  - taskStart
-            taskDifference = 5 - taskTime
-            if (taskDifference > 0):
-                time.sleep(taskDifference)
-        except:
-            pass
-        
-        
-        try:
-            taskStart = time.time()
-            test2()
-            taskTime = time.time() - taskStart
-            taskDifference = 5 - taskTime
-            if (taskDifference > 0):
-                time.sleep(taskDifference)
-        except:
-            pass
-        
-        timeEnd = time.time()
-        cycleTime = timeEnd - timeStart
-        print "Cycle finished in: " + str(cycleTime)
     
     
     
